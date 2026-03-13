@@ -1,50 +1,42 @@
 'use strict';
 
-async function setPublicPermissions(newPermissions) {
+async function ensurePublicPermissions(newPermissions) {
   const publicRole = await strapi.query('plugin::users-permissions.role').findOne({
     where: { type: 'public' },
   });
 
-  const allPermissionsToCreate = [];
+  const existingPerms = await strapi.query('plugin::users-permissions.permission').findMany({
+    where: { role: publicRole.id },
+  });
+  const existingActions = new Set(existingPerms.map((p) => p.action));
+
+  const toCreate = [];
   Object.keys(newPermissions).map((controller) => {
     const actions = newPermissions[controller];
-    const permissionsToCreate = actions.map((action) => {
-      return strapi.query('plugin::users-permissions.permission').create({
-        data: {
-          action: `api::${controller}.${controller}.${action}`,
-          role: publicRole.id,
-        },
-      });
+    actions.forEach((action) => {
+      const actionKey = `api::${controller}.${controller}.${action}`;
+      if (!existingActions.has(actionKey)) {
+        toCreate.push(
+          strapi.query('plugin::users-permissions.permission').create({
+            data: { action: actionKey, role: publicRole.id },
+          })
+        );
+      }
     });
-    allPermissionsToCreate.push(...permissionsToCreate);
   });
-  await Promise.all(allPermissionsToCreate);
+
+  if (toCreate.length > 0) {
+    await Promise.all(toCreate);
+    console.log(`Created ${toCreate.length} missing public permissions.`);
+  }
 }
 
-async function seedApp() {
-  const shouldSeed = await isFirstRun();
-  if (!shouldSeed) return;
-
-  console.log('Setting up public API permissions...');
-  await setPublicPermissions({
+module.exports = async () => {
+  console.log('Ensuring public API permissions...');
+  await ensurePublicPermissions({
     article: ['find', 'findOne'],
     category: ['find', 'findOne'],
     advisor: ['find', 'findOne'],
   });
   console.log('Public permissions configured.');
-}
-
-async function isFirstRun() {
-  const pluginStore = strapi.store({
-    environment: strapi.config.environment,
-    type: 'type',
-    name: 'setup',
-  });
-  const initHasRun = await pluginStore.get({ key: 'initHasRun' });
-  await pluginStore.set({ key: 'initHasRun', value: true });
-  return !initHasRun;
-}
-
-module.exports = async () => {
-  await seedApp();
 };
