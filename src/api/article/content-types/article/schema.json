@@ -5,7 +5,7 @@
     "singularName": "article",
     "pluralName": "articles",
     "displayName": "Article",
-    "description": "Create your blog content"
+    "description": "1031 exchange educational articles"
   },
   "options": {
     "draftAndPublish": true
@@ -13,27 +13,23 @@
   "pluginOptions": {},
   "attributes": {
     "title": {
-      "type": "string"
-    },
-    "description": {
-      "type": "text",
-      "maxLength": 80
+      "type": "string",
+      "required": true
     },
     "slug": {
       "type": "uid",
-      "targetField": "title"
+      "targetField": "title",
+      "required": true
     },
-    "cover": {
+    "excerpt": {
+      "type": "text",
+      "required": true
+    },
+    "cover_image": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images", "files", "videos"]
-    },
-    "author": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::author.author",
-      "inversedBy": "articles"
+      "allowedTypes": ["images"]
     },
     "category": {
       "type": "relation",
@@ -41,9 +37,46 @@
       "target": "api::category.category",
       "inversedBy": "articles"
     },
-    "blocks": {
-      "type": "dynamiczone",
-      "components": ["shared.media", "shared.quote", "shared.rich-text", "shared.slider"]
+    "author": {
+      "type": "string",
+      "default": "hello1031"
+    },
+    "publish_date": {
+      "type": "date",
+      "required": true
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "reading_time": {
+      "type": "string"
+    },
+    "key_takeaway": {
+      "type": "richtext"
+    },
+    "body": {
+      "type": "richtext",
+      "required": true
+    },
+    "bottom_line": {
+      "type": "richtext"
+    },
+    "faq_items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "article.faq-item"
+    },
+    "related_articles": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::article.article"
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "text"
     }
   }
 }
