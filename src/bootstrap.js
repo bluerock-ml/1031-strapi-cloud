@@ -29,6 +29,7 @@ async function seedApp() {
   await setPublicPermissions({
     article: ['find', 'findOne'],
     category: ['find', 'findOne'],
+    advisor: ['find', 'findOne'],
   });
   console.log('Public permissions configured.');
 }

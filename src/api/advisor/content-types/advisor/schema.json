@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "advisors",
+  "info": {
+    "singularName": "advisor",
+    "pluralName": "advisors",
+    "displayName": "Advisor",
+    "description": "1031 exchange advisor profiles"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true },
+    "photo": { "type": "media", "multiple": false, "required": false, "allowedTypes": ["images"] },
+    "credentials": { "type": "string" },
+    "bio": { "type": "richtext" },
+    "city": { "type": "string" },
+    "state": { "type": "string" },
+    "latitude": { "type": "float" },
+    "longitude": { "type": "float" },
+    "specialties": { "type": "string" },
+    "licensed_states": { "type": "string" },
+    "calendar_link": { "type": "string" },
+    "phone": { "type": "string" },
+    "available": { "type": "boolean", "default": true }
+  }
+}
