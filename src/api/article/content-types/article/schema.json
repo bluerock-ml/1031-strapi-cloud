@@ -77,6 +77,10 @@
     },
     "seo_description": {
       "type": "text"
+    },
+    "display_order": {
+      "type": "integer",
+      "default": 0
     }
   }
 }
